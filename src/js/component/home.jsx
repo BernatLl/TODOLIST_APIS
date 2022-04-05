@@ -19,10 +19,10 @@ const Home = () => {
 		setListaTareas(listaFiltrada);
 	};
 
-	useEffect(() => {
+	const newData = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
-			method: "GET",
-			body: JSON.stringify(todos),
+			method: "POST",
+			body: JSON.stringify("todos"),
 			headers: {
 				Accept: "application/json",
 				"Content-type": "application/json",
@@ -37,11 +37,32 @@ const Home = () => {
 			.catch((error) => {
 				console.error(error);
 			});
-	}, []);
-	useEffect(() => {
+	};
+
+	// const editData =() => {
+	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
+	// 		method: "PUT",
+	// 		body: JSON.stringify("todos"),
+	// 		headers: {
+	// 			Accept: "application/json",
+	// 			"Content-type": "application/json",
+	// 		},
+	// 	})
+	// 		.then((resp) => {
+	// 			return resp.json();
+	// 		})
+	// 		.then((data) => {
+	// 			nuevaTarea(data);
+	// 			console.log(data);
+	// 		})
+	// 		.catch((error) => {
+	// 			console.log(error);
+	// 		});
+	// };
+	const loadData = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
-			method: "PUT",
-			body: JSON.stringify(todos),
+			method: "GET",
+			body: JSON.stringify("todos"),
 			headers: {
 				Accept: "application/json",
 				"Content-type": "application/json",
@@ -51,13 +72,14 @@ const Home = () => {
 				return resp.json();
 			})
 			.then((data) => {
-				nuevaTarea(data);
+				setListaTareas([...listaTareas, data]);
 				console.log(data);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
-	});
+	};
+
 	return (
 		<div className="container">
 			<TareaForm nuevaTarea={nuevaTarea} />
