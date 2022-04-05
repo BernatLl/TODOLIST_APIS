@@ -10,7 +10,7 @@ body{
     margin: 60px auto 20px;
     align-items: center;
     
-    color: blue;
+    color: rgb(110, 110, 199);
     display: flex;
     flex-direction: column;
     
@@ -26,7 +26,7 @@ body{
 }
 .form button {
     margin: 30px 0;
-    color: blue;
+    color: rgb(110, 110, 199);
     background-color: black;
 
 }
@@ -43,7 +43,7 @@ body{
 .tarea {
     border: 1px black solid;
     height:fit-content;
-    background-color: thistle;
+    background-color: rgb(149, 91, 224);
     padding: 2%;
     display: grid;
     grid-template-columns: 4fr 1fr;

@@ -62,7 +62,7 @@ const Home = () => {
 	const loadData = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
 			method: "GET",
-			body: JSON.stringify("todos"),
+
 			headers: {
 				Accept: "application/json",
 				"Content-type": "application/json",
