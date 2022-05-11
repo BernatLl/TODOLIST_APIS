@@ -1,92 +1,111 @@
 import React, { useState, useEffect } from "react";
-import TareaForm from "./TareaForm.jsx";
+
 import "../../styles/index.css";
-import Tarea from "./Tarea.jsx";
+
+function Tarea(label, done) {
+	this.label = label;
+	this.done = done;
+}
 
 const Home = () => {
-	/*const task = {
-		label: "",
-		done: false,
-	}; */
-	const [listaTareas, setListaTareas] = useState([]);
+	const [list, setList] = useState([]);
+	const [task, setTask] = useState("");
 
-	const nuevaTarea = (tarea) => {
-		setListaTareas([tarea, ...listaTareas]);
-	};
+	useEffect(() => {
+		loadData();
+	}, []);
 
-	const borrar = (id) => {
-		const listaFiltrada = listaTareas.filter((e, index) => index !== id);
-		setListaTareas(listaFiltrada);
-	};
+	useEffect(() => {
+		if (list.length > 0) {
+			newData();
+		}
+	}, [list]);
 
-	const newData = () => {
-		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
-			method: "POST",
-			body: JSON.stringify("todos"),
-			headers: {
-				Accept: "application/json",
-				"Content-type": "application/json",
-			},
-		})
-			.then((resp) => {
-				return resp.json();
-			})
-			.then((data) => {
-				setListaTareas(data);
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-	};
-
-	// const editData =() => {
-	// 	fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
-	// 		method: "PUT",
-	// 		body: JSON.stringify("todos"),
-	// 		headers: {
-	// 			Accept: "application/json",
-	// 			"Content-type": "application/json",
-	// 		},
-	// 	})
-	// 		.then((resp) => {
-	// 			return resp.json();
-	// 		})
-	// 		.then((data) => {
-	// 			nuevaTarea(data);
-	// 			console.log(data);
-	// 		})
-	// 		.catch((error) => {
-	// 			console.log(error);
-	// 		});
-	// };
 	const loadData = () => {
 		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
 			method: "GET",
 
 			headers: {
-				Accept: "application/json",
 				"Content-type": "application/json",
 			},
 		})
 			.then((resp) => {
 				return resp.json();
 			})
-			.then((data) => {
-				setListaTareas([...listaTareas, data]);
-				console.log(data);
+			.then((res) => {
+				if (res !== undefined)
+					setList(res.filter((task) => !task.done));
+				console.log(res);
 			})
 			.catch((error) => {
 				console.log(error);
 			});
 	};
+	const newData = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/BernatLl", {
+			method: "PUT",
+			body: JSON.stringify(list),
+			headers: {
+				"Content-type": "application/json",
+			},
+		})
+			.then((resp) => {
+				return resp.json();
+			})
+
+			.catch((error) => {
+				console.error(error);
+			});
+	};
+
+	const HandleSubmit = (ev) => {
+		ev.preventDefault();
+		setList([...list, new Tarea(task, false)]);
+	};
+	const LimpiarForm = () => {
+		document.getElementById("myInput").value = "";
+	};
+	const DeleteTask = (index) => {
+		let tmp = list;
+		list.splice(index, 1);
+		console.log(tmp);
+		setList([...list]);
+	};
 
 	return (
 		<div className="container">
-			<TareaForm nuevaTarea={nuevaTarea} />
+			<div>
+				<form className="form" onSubmit={HandleSubmit}>
+					<span>Añadir tarea</span>
+					<input
+						id="myInput"
+						type="text"
+						onChange={(ev) => setTask(ev.target.value)}
+					/>
+					<button
+						onClick={LimpiarForm}
+						type="submit"
+						className="btn btn-dark">
+						Añadir
+					</button>
+				</form>
+			</div>
 			<div className="lista">
-				{listaTareas.map((e, index) => (
-					<Tarea tarea={e} borrar={borrar} id={index} />
-				))}
+				{list.map((task, i) => {
+					return (
+						<div className="tarea" key={i}>
+							<p>{task.label}</p>
+							<button
+								className="btn"
+								id="myBtn"
+								onClick={() => {
+									DeleteTask(i);
+								}}>
+								Borrar
+							</button>
+						</div>
+					);
+				})}
 			</div>
 		</div>
 	);
